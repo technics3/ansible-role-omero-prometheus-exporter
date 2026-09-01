@@ -32,19 +32,22 @@ omero_prometheus_exporter_counts_query_files:
 # Prometheus component versions
 omero_prometheus_tools_version: 0.2.3
 
-omero_prometheus_tools_requirements_ice_package:
-  RedHat:
-    "9": "https://github.com/glencoesoftware/zeroc-ice-py-rhel9-x86_64/releases/download/\
-      20230830/zeroc_ice-3.6.5-cp39-cp39-linux_x86_64.whl"
-  Debian:
-    "22": "https://github.com/glencoesoftware/zeroc-ice-py-ubuntu2204-x86_64/releases/download/20221004/zeroc_ice-3.6.5-cp310-cp310-linux_x86_64.whl"
-    "24": "https://github.com/glencoesoftware/zeroc-ice-py-linux-x86_64/releases/download/20240202/zeroc_ice-3.6.5-cp312-cp312-manylinux_2_28_x86_64.whl"
+omero_prometheus_tools_requirements_ice_package: "https://github.com/glencoesoftware/zeroc-ice-py-linux-x86_64/releases/download/20240202/zeroc_ice-3.6.5-cp{{ omero_prometheus_tools_python_version }}-cp{{ omero_prometheus_tools_python_version }}-manylinux_2_28_x86_64.whl"
+
+
+# Variable used in the ansible-role-python3-virtualenv and for the
+# omero_web_python_requirements_ice_package. Use the same variable
+# (python_version) for both omero-server and omero-web.
+python_version: "3.12"
+
+# Derived variable used in the omero_server_python_requirements_ice_package
+omero_prometheus_tools_python_version: "{{ python_version | replace('.', '') }}"
 
 # List of python3 packages to install
 omero_prometheus_tools_requirements:
   # TODO: make the use of our non-standard wheel optional
-  - "{{ omero_prometheus_tools_requirements_ice_package[ansible_os_family][ansible_distribution_major_version] |
-        default('zeroc-ice') }}"
+  - "{{ omero_prometheus_tools_requirements_ice_package |
+        default('zeroc-ice')}}"
   - omero-py>=5.18.0
   - "omero-prometheus-tools=={{ omero_prometheus_tools_version }}"
 

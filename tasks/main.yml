@@ -61,7 +61,7 @@
 
 - name: Omero prometheus exporter | enable service
   become: true
-  ansible.builtin.systemd_service:
+  ansible.builtin.systemd:
     daemon_reload: true
     enabled: true
     name: prometheus-omero-exporter
